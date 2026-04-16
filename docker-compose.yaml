@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  # 1. Database Service
+  db:
+    image: postgres:15-alpine
+    container_name: mytoko_db
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "${DB_PORT}"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # 2. ETL Service (Aplikasi Anda)
+  etl-service:
+    build: .
+    container_name: etl_pipeline
+    restart: on-failure
+    depends_on:
+      - db
+    volumes:
+      # Sinkronisasi folder data lokal ke kontainer
+      - ./data:/app/data
+      - ./config.yaml:/app/config.yaml
+    environment:
+      # Koneksi string dinamis
+      DB_URL: postgresql://${DB_USER}:${DB_PASSWORD}@db:${DB_PORT}/${DB_NAME}
+      CONFIG_PATH: /app/config.yaml
+    env_file:
+      - .env
+
+volumes:
+  postgres_data:

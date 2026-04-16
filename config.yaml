@@ -1,0 +1,23 @@
+etl_settings:
+
+  input_file:
+    kategori: 'data_category.csv'
+    produk: 'data_fashion_products_dataset.json'
+    penjualan: 'Dataset_Penjualan.xlsx'
+
+  path:
+    raw: 'data/raw'
+    staging: 'data/staging'
+    final: 'data/final'
+  
+database_settings:
+  schema: 'public'
+
+  tables:
+    tanggal: 'dim_tanggal'
+    produk: 'dim_produk'
+    kategori: 'dim_kategori'
+    transaksi: 'fact_transaksi_sales'
+  
+  pool_size: 5
+  timeout: 30
